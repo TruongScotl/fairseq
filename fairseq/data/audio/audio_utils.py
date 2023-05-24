@@ -19,7 +19,6 @@ from fairseq.data.audio.waveform_transforms import CompositeAudioWaveformTransfo
 SF_AUDIO_FILE_EXTENSIONS = {".wav", ".flac", ".ogg"}
 FEATURE_OR_SF_AUDIO_FILE_EXTENSIONS = {".npy", ".wav", ".flac", ".ogg"}
 
-@jit
 def convert_waveform(
     waveform: Union[np.ndarray, torch.Tensor],
     sample_rate: int,
@@ -47,7 +46,7 @@ def convert_waveform(
         import torchaudio.sox_effects as ta_sox
     except ImportError:
         raise ImportError("Please install torchaudio: pip install torchaudio")
-
+    @jit
     effects = []
     if normalize_volume:
         effects.append(["gain", "-n"])
