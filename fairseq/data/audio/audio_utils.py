@@ -9,7 +9,6 @@ from pathlib import Path
 import io
 from typing import BinaryIO, List, Optional, Tuple, Union
 
-from numba import jit
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -46,7 +45,6 @@ def convert_waveform(
         import torchaudio.sox_effects as ta_sox
     except ImportError:
         raise ImportError("Please install torchaudio: pip install torchaudio")
-    @jit
     effects = []
     if normalize_volume:
         effects.append(["gain", "-n"])
