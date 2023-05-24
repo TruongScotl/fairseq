@@ -9,6 +9,7 @@ from pathlib import Path
 import io
 from typing import BinaryIO, List, Optional, Tuple, Union
 
+from numpa import jit
 import numpy as np
 import torch
 import torch.nn.functional as F
