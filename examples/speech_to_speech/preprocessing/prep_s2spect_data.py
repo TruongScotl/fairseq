@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 import shutil
 import torchaudio
+from numba import jit
 
 import soundfile as sf
 from tqdm import tqdm
@@ -25,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 MANIFEST_COLUMNS = ["id", "src_audio", "src_n_frames", "tgt_audio", "tgt_n_frames"]
 
-
+@jit
 def prepare_target_data(args, tgt_audios):
     feature_name = "logmelspec80"
     zip_path = args.output_root / f"{feature_name}.zip"
@@ -56,7 +57,7 @@ def prepare_target_data(args, tgt_audios):
 
     return zip_path
 
-
+@jit
 def process(args):
     os.makedirs(args.output_root, exist_ok=True)
 
