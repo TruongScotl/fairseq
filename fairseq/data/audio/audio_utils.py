@@ -9,7 +9,6 @@ from pathlib import Path
 import io
 from typing import BinaryIO, List, Optional, Tuple, Union
 
-from numba import jit
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -18,6 +17,7 @@ from fairseq.data.audio.waveform_transforms import CompositeAudioWaveformTransfo
 
 SF_AUDIO_FILE_EXTENSIONS = {".wav", ".flac", ".ogg"}
 FEATURE_OR_SF_AUDIO_FILE_EXTENSIONS = {".npy", ".wav", ".flac", ".ogg"}
+
 
 def convert_waveform(
     waveform: Union[np.ndarray, torch.Tensor],
@@ -46,6 +46,7 @@ def convert_waveform(
         import torchaudio.sox_effects as ta_sox
     except ImportError:
         raise ImportError("Please install torchaudio: pip install torchaudio")
+
     effects = []
     if normalize_volume:
         effects.append(["gain", "-n"])
@@ -339,7 +340,7 @@ def get_mel_filters(
         import librosa
     except ImportError:
         raise ImportError("Please install librosa: pip install librosa")
-    basis = librosa.filters.mel(sr=sample_rate, n_fft=n_fft, n_mels=n_mels, fmin=f_min, fmax=f_max)
+    basis = librosa.filters.mel(sample_rate, n_fft, n_mels, f_min, f_max)
     return torch.from_numpy(basis).float()
 
 
@@ -360,7 +361,7 @@ class TTSSpectrogram(torch.nn.Module):
         basis = get_fourier_basis(n_fft).unsqueeze(1)
         basis *= get_window(window_fn, n_fft, win_length)
         self.register_buffer("basis", basis)
-    @jit
+
     def forward(
         self, waveform: torch.Tensor
     ) -> Union[torch.Tensor, Tuple[torch.Tensor, torch.Tensor]]:
